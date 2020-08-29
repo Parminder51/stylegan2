@@ -35,19 +35,19 @@ class trainer():
         # Pick latent vector.
         rnd = np.random.RandomState(5)
         latents = rnd.randn(1, self.Gs.input_shape[1])
-        self.make(latents)
+        self.make(latents, 0)
         latents[-1] = 0
-        self.make(latents)
+        self.make(latents, 1)
 
 
-    def make(self, latents):
+    def make(self, latents, i):
         # Generate image.
         fmt = dict(func=tflib.convert_images_to_uint8, nchw_to_nhwc=True)
         images = self.Gs.run(latents, None, truncation_psi=0.7, randomize_noise=True, output_transform=fmt)
 
         # Save image.
         os.makedirs(self.result_dir, exist_ok=True)
-        png_filename = os.path.join(self.result_dir, 'example'+str(latents[-1])+'.png')
+        png_filename = os.path.join(self.result_dir, 'example'+str(i)+'.png')
         PIL.Image.fromarray(images[0], 'RGB').save(png_filename)
 
 p = trainer()
